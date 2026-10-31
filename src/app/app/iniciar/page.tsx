@@ -14,9 +14,7 @@ export default async function Page() {
       <div>
         <h1 className="text-3xl font-bold">Iniciar projeto</h1>
         <p className="mt-1 max-w-2xl text-ink-soft">
-          Um brief de três linhas vira projeto completo: identidade, carteiras cifradas, site publicado, domínio, kit social,
-          curva com taxa própria, lançamento na Meteora DBC, listagem e acompanhamento até o lucro em caixa. Cada passo fica
-          registrado; o que precisa de você (SOL, confirmação, chave) para em espera e explica o que falta.
+          Três campos. O Estaleiro monta o site, as carteiras, a curva e o acompanhamento do caixa. Se faltar SOL, uma confirmação ou uma chave, o passo para e diz o que falta.
         </p>
       </div>
 

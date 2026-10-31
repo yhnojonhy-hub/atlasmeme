@@ -25,7 +25,7 @@ export default async function Page({ searchParams }: { searchParams: Promise<{ m
       ) : (
         <Empty
           title="Cole um mint para começar"
-          body="O Farol lê o que está on-chain e no indexador para aquele endereço. Nada é assinado ou enviado."
+          body="A leitura vem da rede e do indexador para aquele endereço. Esta tela não assina nem envia transação."
         />
       )}
     </>

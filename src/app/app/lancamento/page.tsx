@@ -9,12 +9,11 @@ export default function Page() {
       <div>
         <h1 className="text-3xl font-bold">Lançamento</h1>
         <p className="mt-1 max-w-2xl text-ink-soft">
-          O ciclo de vida de um projeto no Farol: da descoberta ao dia 90. Cada etapa tem um gate; o token só nasce depois
-          que a comunidade prova que existe.
+          Da descoberta ao dia 90. O token sai na Meteora quando o lançamento está ligado, a carteira de operação tem SOL e você confirma.
         </p>
       </div>
 
-      <Section title="Onde o token é emitido" lead="O Farol não emite. Você lança numa plataforma existente e o Farol confirma endereços, publica políticas e acompanha.">
+      <Section title="Onde o token é emitido" lead="O caminho padrão é a Meteora DBC. Pump.fun e Raydium ficam aqui como referência de taxa.">
         <div className="grid gap-3 sm:grid-cols-3">
           <div className="card p-4">
             <div className="font-semibold">Pump.fun</div>

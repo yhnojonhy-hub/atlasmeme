@@ -1,31 +1,31 @@
 import type { Metadata } from "next";
-import { Bricolage_Grotesque, Figtree } from "next/font/google";
+import { Darker_Grotesque, Literata } from "next/font/google";
 import "./globals.css";
 
-const bricolage = Bricolage_Grotesque({
-  variable: "--font-bricolage",
+const grotesque = Darker_Grotesque({
+  variable: "--font-grotesque",
   subsets: ["latin"],
-  weight: ["500", "600", "700", "800"],
+  weight: ["500", "600", "700", "800", "900"],
 });
 
-const figtree = Figtree({
-  variable: "--font-figtree",
+const literata = Literata({
+  variable: "--font-literata",
   subsets: ["latin"],
-  weight: ["400", "500", "600", "700"],
+  weight: ["400", "600"],
 });
 
 export const metadata: Metadata = {
   metadataBase: new URL(process.env.FAROL_PUBLIC_URL?.trim() || "http://localhost:3000"),
   title: {
-    default: "Farol — transparência para comunidades e tokens na Solana",
-    template: "%s · Farol",
+    default: "Estaleiro — monta, lança e acompanha o caixa",
+    template: "%s · Estaleiro",
   },
   description:
-    "Sites de projeto, tesouraria declarada, liquidez verificada e taxas do criador em um só lugar. Números com fonte e horário.",
+    "Do brief ao lançamento na Solana: site, carteiras, curva e o caixa de cada projeto, com fonte e horário em cada número.",
   icons: { icon: "/favicon.svg" },
   openGraph: {
-    title: "Farol",
-    description: "Transparência para comunidades e tokens na Solana.",
+    title: "Estaleiro",
+    description: "Monta a moeda, o site e acompanha o caixa.",
     images: ["/og.svg"],
   },
 };
@@ -35,7 +35,7 @@ export default function RootLayout({
 }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="pt-BR">
-      <body className={`${bricolage.variable} ${figtree.variable} antialiased`}>
+      <body className={`${grotesque.variable} ${literata.variable} antialiased`}>
         {children}
       </body>
     </html>

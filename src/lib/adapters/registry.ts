@@ -74,7 +74,7 @@ export function integrations(): Integration[] {
     },
     {
       id: "vault",
-      name: "Cofre de carteiras (Farol)",
+      name: "Cofre de carteiras",
       role: "Gera e guarda cifradas as carteiras de operação e tesouraria de cada projeto; assina lançamento e claims.",
       notDoes: "Não cria carteiras disfarçadas de usuários; toda carteira é declarada no site por função.",
       docs: "/app/carteiras",
@@ -107,7 +107,7 @@ export function integrations(): Integration[] {
     },
     {
       id: "projects-store",
-      name: "Registro de projetos (Farol)",
+      name: "Registro de projetos",
       role: "Guarda a configuração pública de cada projeto: token, carteiras declaradas, políticas e canais.",
       notDoes: "Não custodia ativos; não movimenta carteiras.",
       docs: "/app/apis",

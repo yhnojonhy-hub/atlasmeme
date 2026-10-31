@@ -1,22 +1,24 @@
 @import "tailwindcss";
 
 :root {
-  /* Paleta Farol: noite-mar, espuma, feixe âmbar, maré, rocha, névoa */
-  --ink: #0e1b2a;
-  --ink-soft: #27394a;
-  --foam: #f3f6f5;
-  --foam-2: #e8eeec;
-  --paper: #ffffff;
-  --beam: #f2b134;
-  --beam-deep: #c98a12;
-  --tide: #1d6b74;
-  --tide-soft: #d9ecee;
-  --rock: #c2453a;
-  --rock-soft: #f6dedb;
-  --mist: #8fa3ae;
-  --line: #d5dee2;
-  --ok: #2f7d4f;
-  --ok-soft: #dcefe3;
+  /* Estaleiro: chapa, primer (zarcão), cobre oxidado. O vermelho é a única cor forte. */
+  --ink: #14221c;
+  --ink-soft: #2c3b34;
+  --foam: #e7ebe6;
+  --foam-2: #dce3dc;
+  --paper: #f7f8f6;
+  --primer: #e23d28;
+  --primer-deep: #c4321f;
+  --beam: #c4a15a;
+  --beam-deep: #8a6a1e;
+  --tide: #1f6a5c;
+  --tide-soft: #d5e7e2;
+  --rock: #9c2f2a;
+  --rock-soft: #f3ddd9;
+  --mist: #6e7c74;
+  --line: #c9d2cb;
+  --ok: #1f7a4d;
+  --ok-soft: #d7ebdf;
 }
 
 @theme inline {
@@ -25,6 +27,8 @@
   --color-foam: var(--foam);
   --color-foam-2: var(--foam-2);
   --color-paper: var(--paper);
+  --color-primer: var(--primer);
+  --color-primer-deep: var(--primer-deep);
   --color-beam: var(--beam);
   --color-beam-deep: var(--beam-deep);
   --color-tide: var(--tide);
@@ -35,9 +39,9 @@
   --color-line: var(--line);
   --color-ok: var(--ok);
   --color-ok-soft: var(--ok-soft);
-  --font-display: var(--font-bricolage);
-  --font-sans: var(--font-figtree);
-  --radius-card: 14px;
+  --font-display: var(--font-grotesque);
+  --font-sans: var(--font-grotesque);
+  --radius-card: 8px;
 }
 
 html {
@@ -47,7 +51,8 @@ html {
 body {
   background: var(--foam);
   color: var(--ink);
-  font-family: var(--font-figtree), system-ui, sans-serif;
+  font-family: var(--font-grotesque), system-ui, sans-serif;
+  font-size: 1.0625rem;
   font-feature-settings: "tnum" 1, "cv11" 1;
   -webkit-font-smoothing: antialiased;
 }
@@ -56,60 +61,25 @@ h1,
 h2,
 h3,
 .display {
-  font-family: var(--font-bricolage), var(--font-figtree), sans-serif;
-  letter-spacing: -0.01em;
+  font-family: var(--font-grotesque), system-ui, sans-serif;
+  letter-spacing: -0.02em;
+  font-weight: 800;
+}
+
+.reading {
+  font-family: var(--font-literata), Georgia, serif;
+  font-weight: 400;
+  letter-spacing: 0;
+  line-height: 1.6;
+  max-width: 62ch;
 }
 
 .num {
   font-variant-numeric: tabular-nums;
 }
 
-/* Feixe do farol: a única animação não disparada pelo usuário. */
-@keyframes sweep {
-  from {
-    transform: rotate(-28deg);
-  }
-  to {
-    transform: rotate(28deg);
-  }
-}
-
-.beam {
-  position: absolute;
-  inset: 0;
-  overflow: hidden;
-  pointer-events: none;
-}
-
-.beam::before {
-  content: "";
-  position: absolute;
-  left: 50%;
-  top: 100%;
-  width: 220vmax;
-  height: 220vmax;
-  margin-left: -110vmax;
-  margin-top: -110vmax;
-  transform-origin: 50% 50%;
-  background: conic-gradient(
-    from 262deg at 50% 50%,
-    transparent 0deg,
-    rgba(242, 177, 52, 0.42) 7deg,
-    rgba(242, 177, 52, 0.08) 15deg,
-    transparent 17deg
-  );
-  animation: sweep 11s ease-in-out infinite alternate;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .beam::before {
-    animation: none;
-    transform: rotate(0deg);
-  }
-}
-
 :focus-visible {
-  outline: 2px solid var(--beam-deep);
+  outline: 2px solid var(--primer);
   outline-offset: 2px;
 }
 
@@ -123,7 +93,7 @@ h3,
   width: 100%;
   border: 1px solid var(--line);
   background: var(--paper);
-  border-radius: 10px;
+  border-radius: 6px;
   padding: 0.65rem 0.8rem;
   font-size: 0.95rem;
   color: var(--ink);
@@ -139,8 +109,8 @@ h3,
   display: inline-flex;
   align-items: center;
   gap: 0.5rem;
-  border-radius: 10px;
-  padding: 0.65rem 1rem;
+  border-radius: 6px;
+  padding: 0.55rem 0.95rem;
   font-weight: 600;
   font-size: 0.95rem;
   transition: background-color 120ms ease, color 120ms ease;
@@ -156,12 +126,12 @@ h3,
 }
 
 .btn-beam {
-  background: var(--beam);
-  color: var(--ink);
+  background: var(--primer);
+  color: #f7f8f6;
 }
 
 .btn-beam:hover {
-  background: #f7c25a;
+  background: var(--primer-deep);
 }
 
 .btn-ghost {
@@ -174,11 +144,21 @@ h3,
   background: var(--foam-2);
 }
 
+.btn-on-dark {
+  border: 1px solid color-mix(in srgb, var(--foam) 35%, transparent);
+  background: transparent;
+  color: var(--foam);
+}
+
+.btn-on-dark:hover {
+  background: color-mix(in srgb, var(--foam) 12%, transparent);
+}
+
 .pill {
   display: inline-flex;
   align-items: center;
   gap: 0.35rem;
-  border-radius: 999px;
+  border-radius: 4px;
   padding: 0.2rem 0.6rem;
   font-size: 0.78rem;
   font-weight: 600;
@@ -188,8 +168,8 @@ h3,
   display: flex;
   align-items: center;
   gap: 0.6rem;
-  border-radius: 10px;
-  padding: 0.55rem 0.7rem;
+  border-radius: 6px;
+  padding: 0.5rem 0.7rem;
   color: var(--ink-soft);
   font-weight: 500;
 }

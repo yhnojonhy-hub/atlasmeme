@@ -123,7 +123,7 @@ export default async function Page({ searchParams }: { searchParams: Promise<{ p
           </Section>
 
           <Alert tone="info">
-            Regras do Farol para carteiras: toda carteira controlada pela equipe é declarada por função; nenhuma carteira da
+            Regras de carteira: toda carteira controlada pela equipe é declarada por função; nenhuma carteira da
             equipe é apresentada como usuário independente; vendas da equipe seguem a política publicada ({current.policies.teamSales || "ainda não informada"}).
           </Alert>
         </>
