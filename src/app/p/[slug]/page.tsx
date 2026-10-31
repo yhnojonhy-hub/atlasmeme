@@ -39,8 +39,8 @@ export default async function ProjectSite({ params }: { params: Promise<{ slug: 
           </div>
           <div className="flex items-center gap-2">
             <Pill tone="tide">{STAGE_LABEL[p.stage]}</Pill>
-            <Link href="/" className="hidden items-center gap-1 text-xs text-mist sm:inline-flex" title="Publicado com Estaleiro">
-              <Mark size={18} /> Estaleiro
+            <Link href="/" className="hidden items-center gap-1 text-xs text-mist sm:inline-flex" title="Publicado com o AtlasMeme">
+              <Mark size={18} /> AtlasMeme
             </Link>
           </div>
         </div>
@@ -199,7 +199,7 @@ export default async function ProjectSite({ params }: { params: Promise<{ slug: 
           <span>
             Atualizado em {p.updatedAt ? new Date(p.updatedAt).toLocaleDateString("pt-BR") : "—"} · publicado com{" "}
             <Link href="/" className="underline">
-              Estaleiro
+              AtlasMeme
             </Link>
           </span>
           <span>Dados de terceiros podem atrasar; a hora da leitura aparece ao lado de cada número.</span>

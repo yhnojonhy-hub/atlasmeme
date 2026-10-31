@@ -1,6 +1,6 @@
-# Estaleiro
+# AtlasMeme
 
-Operação de lançamento na Solana. O Estaleiro monta o site público de um projeto
+Operação de lançamento na Solana. O AtlasMeme monta o site público de um projeto
 (mint, pool, carteiras declaradas, taxas do criador, tesouraria) e dá ao operador um painel com
 abas para medir o piloto: mercado, taxas, carteiras, comunidade, negócio, risco, lançamento e APIs.
 
@@ -53,7 +53,7 @@ com 2% de taxa, LP travada após graduação, página de fatos e riscos, carteir
 
 ### Como a sua carteira entra
 
-O Estaleiro **não importa chaves privadas de carteiras pessoais**. O fluxo é:
+O AtlasMeme **não importa chaves privadas de carteiras pessoais**. O fluxo é:
 
 1. Sua Phantom/Ledger é a **carteira principal**: informe só o endereço público em `FAROL_OWNER_WALLET`. Ela aparece no
    Financeiro com saldo.
@@ -64,7 +64,7 @@ O Estaleiro **não importa chaves privadas de carteiras pessoais**. O fluxo é:
 
 Se uma chave privada vazar (colada em chat, e-mail, print), a carteira está comprometida: crie outra e mova o saldo.
 
-## O que o Estaleiro não faz
+## O que o AtlasMeme não faz
 
 - Não cria volume, não distribui carteiras para parecer descentralizado, não promete listagem.
 - Não cria contas em redes sociais; só publica, via API, na conta oficial que você conectou.

@@ -14,7 +14,7 @@ export default async function Page() {
       <div>
         <h1 className="text-3xl font-bold">Iniciar projeto</h1>
         <p className="mt-1 max-w-2xl text-ink-soft">
-          Três campos. O Estaleiro monta o site, as carteiras, a curva e o acompanhamento do caixa. Se faltar SOL, uma confirmação ou uma chave, o passo para e diz o que falta.
+          Três campos. O AtlasMeme monta o site, as carteiras, a curva e o caixa. Se faltar SOL, uma confirmação ou uma chave, o passo para e diz o que falta.
         </p>
       </div>
 

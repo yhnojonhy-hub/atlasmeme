@@ -35,7 +35,7 @@ export const GATES: Gate[] = [
     when: "Antes do lançamento · conferência humana",
     items: [
       "Documento público: oferta, alocações, vesting, políticas de liquidez e vendas da equipe",
-      "Carteiras da equipe, tesouraria e vesting declaradas no Estaleiro",
+      "Carteiras da equipe, tesouraria e vesting declaradas no AtlasMeme",
       "Tesouraria em multisig (Squads) com política de aprovação",
       "Configuração do launchpad revisada por duas pessoas; ambiente de teste separado",
       "Revisão jurídica do modelo concreto (CVM/BCB) e tributação",
@@ -77,7 +77,7 @@ export function LaunchChecklist() {
       try {
         const raw = localStorage.getItem(KEY);
         if (raw) setDone(JSON.parse(raw));
-      } catch {}
+      } catch { }
     }, 0);
     return () => clearTimeout(t);
   }, []);

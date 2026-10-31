@@ -128,7 +128,7 @@ export const site: StepDef = {
 export const dominio: StepDef = {
   id: "dominio",
   async run({ run, log }) {
-    if (!run.brief.wantOwnDomain) return { status: "pulado", log: ["Domínio próprio desativado no brief; o site segue no subdomínio do Estaleiro."] };
+    if (!run.brief.wantOwnDomain) return { status: "pulado", log: ["Domínio próprio desativado no brief; o site segue no subdomínio do AtlasMeme."] };
     if (!porkbunConfigured()) {
       return { status: "pulado", log: ["Sem PORKBUN_API_KEY/PORKBUN_SECRET_KEY: não é possível registrar domínio. O site segue no subdomínio. Adicione as chaves e repita o passo."], output: { skippedReason: "sem-chaves" } };
     }

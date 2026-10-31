@@ -1,9 +1,0 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630">
-  <rect width="1200" height="630" fill="#E7EBE6"/>
-  <rect x="80" y="150" width="220" height="220" rx="16" fill="#14221C"/>
-  <path d="M108 302 L136 238 H244 L272 302 Z" fill="#E23D28"/>
-  <rect x="168" y="202" width="52" height="36" fill="#E7EBE6"/>
-  <path d="M100 302 H280" stroke="#E7EBE6" stroke-width="10"/>
-  <text x="340" y="280" fill="#14221C" font-family="Arial, sans-serif" font-size="92" font-weight="800">Estaleiro</text>
-  <text x="344" y="350" fill="#2C3B34" font-family="Georgia, serif" font-size="32">Monta a moeda, o site e acompanha o caixa.</text>
-</svg>

@@ -112,10 +112,10 @@ export function Alert({
     tone === "warn"
       ? "bg-[#fff4dc] border-[#f1d49a] text-[#6b4a00]"
       : tone === "bad"
-        ? "bg-rock-soft border-[#e9b4ae] text-[#6e1f17]"
+        ? "bg-rock-soft border-rock/30 text-rock"
         : tone === "good"
-          ? "bg-ok-soft border-[#b7dcc4] text-[#1d4f32]"
-          : "bg-tide-soft border-[#b9d9dd] text-[#114248]";
+          ? "bg-ok-soft border-ok/30 text-ok"
+          : "bg-tide-soft border-tide/30 text-tide";
   return <div className={`rounded-xl border px-4 py-3 text-sm ${cls}`}>{children}</div>;
 }
 
@@ -126,7 +126,7 @@ export function Pill({ tone = "neutral", children }: { tone?: "neutral" | "good"
       : tone === "bad"
         ? "bg-rock-soft text-rock"
         : tone === "beam"
-          ? "bg-[#fdf0d2] text-beam-deep"
+          ? "bg-[rgba(230,180,94,0.16)] text-beam"
           : tone === "tide"
             ? "bg-tide-soft text-tide"
             : "bg-foam-2 text-ink-soft";

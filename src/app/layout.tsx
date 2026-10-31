@@ -1,32 +1,33 @@
 import type { Metadata } from "next";
-import { Darker_Grotesque, Literata } from "next/font/google";
+import { Outfit } from "next/font/google";
 import "./globals.css";
 
-const grotesque = Darker_Grotesque({
-  variable: "--font-grotesque",
+const outfit = Outfit({
+  variable: "--font-outfit",
   subsets: ["latin"],
-  weight: ["500", "600", "700", "800", "900"],
-});
-
-const literata = Literata({
-  variable: "--font-literata",
-  subsets: ["latin"],
-  weight: ["400", "600"],
+  weight: ["400", "500", "600", "700"],
 });
 
 export const metadata: Metadata = {
   metadataBase: new URL(process.env.FAROL_PUBLIC_URL?.trim() || "http://localhost:3000"),
   title: {
-    default: "Estaleiro — monta, lança e acompanha o caixa",
-    template: "%s · Estaleiro",
+    default: "AtlasMeme. O atlas das memecoins",
+    template: "%s | AtlasMeme",
   },
   description:
-    "Do brief ao lançamento na Solana: site, carteiras, curva e o caixa de cada projeto, com fonte e horário em cada número.",
-  icons: { icon: "/favicon.svg" },
+    "Abre um projeto na Solana com página, duas carteiras, curva na Meteora e o caixa acompanhado até o lucro.",
+  icons: {
+    icon: [
+      { url: "/favicon.svg", type: "image/svg+xml" },
+      { url: "/favicon-32.png", sizes: "32x32", type: "image/png" },
+      { url: "/icon-512.png", sizes: "512x512", type: "image/png" },
+    ],
+    apple: "/apple-touch-icon.png",
+  },
   openGraph: {
-    title: "Estaleiro",
-    description: "Monta a moeda, o site e acompanha o caixa.",
-    images: ["/og.svg"],
+    title: "AtlasMeme",
+    description: "O atlas das memecoins: site, carteiras, curva e caixa.",
+    images: [{ url: "/og.jpg", width: 1200, height: 630 }],
   },
 };
 
@@ -35,7 +36,7 @@ export default function RootLayout({
 }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="pt-BR">
-      <body className={`${grotesque.variable} ${literata.variable} antialiased`}>
+      <body className={`${outfit.variable} antialiased`}>
         {children}
       </body>
     </html>

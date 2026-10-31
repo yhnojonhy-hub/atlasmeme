@@ -39,9 +39,8 @@ export function Shell({ children, viewer }: { children: ReactNode; viewer: Viewe
     <div className="flex items-center justify-between gap-2 rounded-xl bg-foam px-3 py-2 text-xs">
       <Link href="/app/conta" className="min-w-0">
         <span className="block truncate font-semibold text-ink">{viewer.name}</span>
-        <span className="block truncate text-mist">
-          {viewer.email} · {viewer.role}
-        </span>
+        <span className="block truncate text-mist">{viewer.email}</span>
+        <span className="block text-mist">{viewer.role === "admin" ? "Administração" : "Operação"}</span>
       </Link>
       {viewer.email !== "local" && (
         <button onClick={logout} className="btn btn-ghost px-2 py-1 text-xs" type="button">
@@ -64,7 +63,7 @@ export function Shell({ children, viewer }: { children: ReactNode; viewer: Viewe
               <Link key={t.href} href={`${t.href}${q}`} className="tab-link" aria-current={active ? "page" : undefined}>
                 <span className="flex-1">
                   <span className="block text-sm font-semibold">{t.label}</span>
-                  <span className={`block text-xs ${active ? "text-foam/70" : "text-mist"}`}>{t.desc}</span>
+                  <span className="block text-xs text-mist">{t.desc}</span>
                 </span>
               </Link>
             );
@@ -117,9 +116,8 @@ export function Shell({ children, viewer }: { children: ReactNode; viewer: Viewe
                 key={t.href}
                 href={`${t.href}${q}`}
                 aria-current={active ? "page" : undefined}
-                className={`rounded-lg px-1 py-1.5 text-center text-[11px] font-semibold ${
-                  active ? "bg-ink text-foam" : "text-ink-soft"
-                }`}
+                className={`rounded-lg px-1 py-1.5 text-center text-[11px] font-medium ${active ? "bg-foam-2 text-ink" : "text-mist"
+                  }`}
               >
                 {t.short}
               </Link>

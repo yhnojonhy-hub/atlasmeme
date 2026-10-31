@@ -3,7 +3,7 @@
     "slug": "farol-demo",
     "name": "Farol Demo",
     "ticker": "FAROL",
-    "tagline": "Projeto de exemplo para mostrar como um site de comunidade fica no Farol.",
+    "tagline": "Projeto de exemplo para mostrar como um site de comunidade fica no AtlasMeme.",
     "about": "Este projeto é um exemplo. O mint abaixo é o USDC da Solana, usado só para demonstrar as leituras on-chain e de indexador com dados reais. Nenhum valor aqui é recomendação.",
     "accent": "#F2B134",
     "stage": "ensaio",
@@ -33,9 +33,21 @@
     "supply": {
       "total": 1000000000,
       "allocations": [
-        { "name": "Curva / mercado", "pct": 80, "vesting": "sem bloqueio; vendida pela curva" },
-        { "name": "Tesouraria da comunidade", "pct": 10, "vesting": "multisig; uso publicado mensalmente" },
-        { "name": "Equipe", "pct": 10, "vesting": "cliff 3 meses, linear 12 meses" }
+        {
+          "name": "Curva / mercado",
+          "pct": 80,
+          "vesting": "sem bloqueio; vendida pela curva"
+        },
+        {
+          "name": "Tesouraria da comunidade",
+          "pct": 10,
+          "vesting": "multisig; uso publicado mensalmente"
+        },
+        {
+          "name": "Equipe",
+          "pct": 10,
+          "vesting": "cliff 3 meses, linear 12 meses"
+        }
       ]
     },
     "policies": {
