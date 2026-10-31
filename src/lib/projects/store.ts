@@ -6,7 +6,7 @@ import { ProjectSchema, type Project, type ProjectInput } from "./schema";
  * Armazenamento em arquivo JSON (data/projects.json), montado como volume no Docker.
  * Simples de inspecionar, versionar e migrar para Postgres quando houver vários clientes.
  */
-const DATA_DIR = process.env.FAROL_DATA_DIR ?? path.join(process.cwd(), "data");
+const DATA_DIR = process.env.FAROL_DATA_DIR?.trim() || path.join(process.cwd(), "data");
 const FILE = path.join(DATA_DIR, "projects.json");
 
 let lock: Promise<void> = Promise.resolve();

@@ -15,7 +15,7 @@ const figtree = Figtree({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL(process.env.FAROL_PUBLIC_URL ?? "http://localhost:3000"),
+  metadataBase: new URL(process.env.FAROL_PUBLIC_URL?.trim() || "http://localhost:3000"),
   title: {
     default: "Farol — transparência para comunidades e tokens na Solana",
     template: "%s · Farol",

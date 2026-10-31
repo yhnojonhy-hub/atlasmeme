@@ -12,14 +12,22 @@ export const SOLANA_RPC = {
   role: "Leitura on-chain do mint: oferta, autoridades e programa do token.",
 };
 
+/** Variável de ambiente vazia (ex.: `SOLANA_RPC_URL=` no .env) conta como ausente. */
+function env(name: string) {
+  const v = process.env[name]?.trim();
+  return v ? v : undefined;
+}
+
 export function rpcUrl() {
-  const key = process.env.HELIUS_API_KEY;
+  const key = env("HELIUS_API_KEY");
   if (key) return `https://mainnet.helius-rpc.com/?api-key=${key}`;
-  return process.env.SOLANA_RPC_URL ?? "https://api.mainnet-beta.solana.com";
+  return env("SOLANA_RPC_URL") ?? "https://api.mainnet-beta.solana.com";
 }
 
 export function rpcLabel() {
-  return process.env.HELIUS_API_KEY ? "Helius (chave configurada)" : "RPC público (sem chave)";
+  if (env("HELIUS_API_KEY")) return "Helius (chave configurada)";
+  if (env("SOLANA_RPC_URL")) return "RPC próprio (SOLANA_RPC_URL)";
+  return "RPC público (sem chave)";
 }
 
 type RpcResp<T> = { result?: T; error?: { message: string } };
@@ -105,7 +113,7 @@ export async function getMintInfo(mint: string): Promise<Result<MintInfo>> {
       hit = r.hit;
       return r.value;
     },
-    hit,
+    () => hit,
   );
 }
 

@@ -14,6 +14,7 @@ sudo chown "$USER":"$USER" /opt/farol
 
 echo "Docker pronto. Próximos passos:"
 echo "  1) copie o repositório para /opt/farol (git clone ou rsync)"
-echo "  2) cp .env.example .env && edite HELIUS_API_KEY e FAROL_DOMAIN"
+echo "  2) cp .env.example .env && edite HELIUS_API_KEY, FAROL_PORT e FAROL_PUBLIC_URL"
 echo "  3) docker compose up -d --build"
-echo "  4) curl -s http://localhost/api/health"
+echo "  4) curl -s 'http://localhost:3030/api/health?quick=1'"
+echo "  5) domínio: deploy/nginx-farol.conf (nginx do host) ou 'docker compose --profile proxy up -d' (Caddy)"

@@ -27,7 +27,8 @@ export async function timed<T>(
   source: string,
   sourceUrl: string,
   fn: () => Promise<T>,
-  cacheHit = false,
+  /** Booleano ou função avaliada depois de `fn`, para refletir o cache do próprio carregamento. */
+  cacheHit: boolean | (() => boolean) = false,
 ): Promise<Result<T>> {
   const t0 = performance.now();
   try {
@@ -39,7 +40,7 @@ export async function timed<T>(
       sourceUrl,
       fetchedAt: new Date().toISOString(),
       latencyMs: Math.round(performance.now() - t0),
-      cacheHit,
+      cacheHit: typeof cacheHit === "function" ? cacheHit() : cacheHit,
     };
   } catch (e) {
     return {

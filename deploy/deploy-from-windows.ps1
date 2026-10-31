@@ -4,7 +4,8 @@
 param(
   [Parameter(Mandatory = $true)][string]$Host,
   [Parameter(Mandatory = $true)][string]$User,
-  [string]$RemoteDir = "/opt/farol"
+  [string]$RemoteDir = "/opt/farol",
+  [int]$Port = 3030
 )
 
 $ErrorActionPreference = "Stop"
@@ -19,6 +20,6 @@ Pop-Location
 Write-Host "Enviando para $User@${Host}:$RemoteDir ..." -ForegroundColor Cyan
 ssh "$User@$Host" "mkdir -p $RemoteDir"
 scp $tar "$User@${Host}:/tmp/farol-deploy.tgz"
-ssh "$User@$Host" "tar -xzf /tmp/farol-deploy.tgz -C $RemoteDir && cd $RemoteDir && bash deploy/vm-setup.sh && ([ -f .env ] || cp .env.example .env) && docker compose up -d --build && sleep 5 && curl -s http://localhost/api/health | head -c 400"
+ssh "$User@$Host" "tar -xzf /tmp/farol-deploy.tgz -C $RemoteDir && cd $RemoteDir && bash deploy/vm-setup.sh && ([ -f .env ] || cp .env.example .env) && docker compose up -d --build && sleep 5 && curl -s 'http://localhost:$Port/api/health?quick=1' | head -c 400"
 
-Write-Host "`nPronto. Acesse http://$Host (ou o domínio configurado em FAROL_DOMAIN)." -ForegroundColor Green
+Write-Host "`nPronto. Acesse http://${Host}:$Port (ou o domínio configurado no nginx/Caddy)." -ForegroundColor Green

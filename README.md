@@ -49,15 +49,24 @@ data/projects.json       seed do primeiro projeto
 ```bash
 # na VM
 bash deploy/vm-setup.sh
-cp .env.example .env && nano .env      # HELIUS_API_KEY, FAROL_DOMAIN
+cp .env.example .env && nano .env      # HELIUS_API_KEY, FAROL_PORT, FAROL_PUBLIC_URL
 docker compose up -d --build
-curl -s http://localhost/api/health
+curl -s 'http://localhost:3030/api/health?quick=1'   # liveness (sem consultar terceiros)
+curl -s  http://localhost:3030/api/health             # estado de cada integração
 ```
+
+O build do `npm ci` usa a rede do host (`build.network: host`) e o container usa DNS IPv4 explícito
+(`1.1.1.1`, `8.8.8.8`): evita falhas `EAI_AGAIN` em VMs cujo DNS upstream é só IPv6.
 
 Do Windows: `.\deploy\deploy-from-windows.ps1 -Host <ip> -User <usuario>`.
 
-Quando o DNS apontar para a VM, defina `FAROL_DOMAIN=seu-dominio.com` e `FAROL_PUBLIC_URL=https://seu-dominio.com`;
-o Caddy emite o certificado sozinho.
+O container publica em `FAROL_PORT` (padrão 3030). Para expor um domínio:
+
+- VM com nginx no host (caso atual): use `deploy/nginx-farol.conf`, troque `SEU_DOMINIO`, habilite o site e rode
+  `certbot --nginx -d SEU_DOMINIO`.
+- VM sem proxy: `docker compose --profile proxy up -d` com `FAROL_DOMAIN=seu-dominio.com`; o Caddy emite o certificado.
+
+Em ambos, defina `FAROL_PUBLIC_URL=https://seu-dominio.com` no `.env`.
 
 ## Latência
 

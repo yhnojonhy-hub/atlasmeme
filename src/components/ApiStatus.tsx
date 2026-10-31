@@ -27,6 +27,8 @@ export function ApiStatus() {
     try {
       const r = await fetch("/api/health");
       setData(await r.json());
+    } catch {
+      // Sem rede ou resposta inválida: mantém o último estado conhecido e tenta de novo no próximo ciclo.
     } finally {
       setLoading(false);
     }

@@ -47,7 +47,7 @@ export async function getPairs(mint: string): Promise<Result<Pair[]>> {
       const chosen = asBase.length > 0 ? asBase : pairs;
       return chosen.sort((a, b) => (b.liquidity?.usd ?? 0) - (a.liquidity?.usd ?? 0));
     },
-    hit,
+    () => hit,
   );
 }
 

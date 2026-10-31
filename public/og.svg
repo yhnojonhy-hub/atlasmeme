@@ -13,5 +13,5 @@
   <rect x="208" y="222" width="64" height="44" rx="10" fill="#F2B134"/>
   <path d="M200 222 L240 182 L280 222 Z" fill="#F3F6F5"/>
   <text x="400" y="330" font-family="Bricolage Grotesque, system-ui, sans-serif" font-weight="800" font-size="120" fill="#F3F6F5" letter-spacing="-3">Farol</text>
-  <text x="404" y="400" font-family="Figtree, system-ui, sans-serif" font-weight="500" font-size="38" fill="#8FA3AE">Transparência para comunidades e tokens na Solana</text>
+  <text x="404" y="400" font-family="Figtree, system-ui, sans-serif" font-weight="500" font-size="38" fill="#8FA3AE">TransparÃªncia para comunidades e tokens na Solana</text>
 </svg>

@@ -2,19 +2,27 @@ name: farol
 
 services:
   farol-web:
-    build: .
+    build:
+      context: .
+      # npm ci roda com a rede do host: evita DNS instável do BuildKit em VMs cujo upstream é só IPv6.
+      network: host
     image: farol/web:latest
     container_name: farol-web
     restart: unless-stopped
+    # DNS explícito (IPv4) para as leituras externas: DEX Screener e RPC.
+    dns:
+      - 1.1.1.1
+      - 8.8.8.8
     env_file: .env
     environment:
       FAROL_REGION: ${FAROL_REGION:-vm}
     volumes:
       - farol-data:/data
-    expose:
-      - "3000"
+    ports:
+      # Publicado só na porta FAROL_PORT; o proxy do host (nginx) ou o Caddy opcional expõe o domínio.
+      - "${FAROL_PORT:-3030}:3000"
     healthcheck:
-      test: ["CMD", "wget", "-qO-", "http://127.0.0.1:3000/api/health"]
+      test: ["CMD", "wget", "-qO-", "http://127.0.0.1:3000/api/health?quick=1"]
       interval: 30s
       timeout: 5s
       retries: 3
@@ -22,10 +30,13 @@ services:
       driver: json-file
       options: { max-size: "10m", max-file: "5" }
 
+  # Opcional: use quando a VM não tiver outro proxy nas portas 80/443.
+  #   docker compose --profile proxy up -d
   farol-caddy:
     image: caddy:2-alpine
     container_name: farol-caddy
     restart: unless-stopped
+    profiles: ["proxy"]
     depends_on:
       - farol-web
     ports:
