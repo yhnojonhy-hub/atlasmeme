@@ -2,6 +2,7 @@ import { randomUUID } from "node:crypto";
 import { z } from "zod";
 import { getSolUsd } from "./adapters/dexscreener";
 import { solBalance } from "./adapters/meteora";
+import { env } from "./env";
 import { dataPath, readJson, updateJson } from "./jsonstore";
 import { listRuns } from "./launcher/store";
 import type { Run } from "./launcher/types";
@@ -76,6 +77,8 @@ export type ProjectFinance = {
 export type FinanceOverview = {
   at: string;
   solUsd: number | null;
+  /** Carteira principal da operação (Phantom/Ledger etc.): só o endereço público, lido de FAROL_OWNER_WALLET. */
+  owner: { pubkey: string; sol: number | null; usd: number | null } | null;
   projects: ProjectFinance[];
   totals: {
     projects: number;
@@ -185,9 +188,16 @@ export async function financeOverview(opts: { balances?: boolean } = {}): Promis
   const walletsSol = rows.reduce((a, r) => a + r.wallets.reduce((b, w) => b + (w.sol ?? 0), 0), 0);
   const anyBalance = rows.some((r) => r.walletsUsd != null);
   const costsAllUsd = costsProjectsUsd + infraEntriesUsd + fixedToDateUsd;
+  const ownerPk = env("FAROL_OWNER_WALLET");
+  let owner: FinanceOverview["owner"] = null;
+  if (ownerPk) {
+    const sol = opts.balances === false ? null : await cachedBalance(ownerPk);
+    owner = { pubkey: ownerPk, sol, usd: sol != null && solUsd ? sol * solUsd : null };
+  }
   return {
     at: new Date().toISOString(),
     solUsd,
+    owner,
     projects: rows.sort((a, b) => b.startedAt.localeCompare(a.startedAt)),
     totals: {
       projects: rows.length,

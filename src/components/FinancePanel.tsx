@@ -47,6 +47,25 @@ export function FinancePanel() {
         <Stat label="Saldo nas carteiras" value={t.walletsUsd == null ? "—" : fmt.usd2(t.walletsUsd)} hint={`${t.walletsSol.toFixed(4)} SOL · SOL ${d.solUsd ? fmt.usd2(d.solUsd) : "—"}`} />
       </div>
 
+      {d.owner ? (
+        <div className="card flex flex-wrap items-center justify-between gap-3 p-4">
+          <div>
+            <div className="text-sm text-ink-soft">Carteira principal (abastece a operação e recebe repasses)</div>
+            <a className="mono text-sm underline-offset-2 hover:underline" href={`https://solscan.io/account/${d.owner.pubkey}`} target="_blank" rel="noreferrer">
+              {d.owner.pubkey}
+            </a>
+          </div>
+          <div className="num text-right text-xl font-semibold">
+            {d.owner.sol == null ? "—" : `${d.owner.sol.toFixed(4)} SOL`}
+            <div className="text-xs font-normal text-mist">{d.owner.usd == null ? "" : fmt.usd2(d.owner.usd)}</div>
+          </div>
+        </div>
+      ) : (
+        <Alert tone="info">
+          Carteira principal não configurada. Defina <code>FAROL_OWNER_WALLET</code> com o <strong>endereço público</strong> da sua Phantom (nunca a chave privada): ela aparece aqui com saldo e é a origem dos SOL que abastecem a carteira de operação de cada projeto.
+        </Alert>
+      )}
+
       <Section title="Por projeto" lead="O que cada sistema completo deu e consumiu. Lucro é caixa: taxas reclamadas menos custos. Posição em token não entra.">
         {d.projects.length === 0 ? (
           <p className="text-sm text-mist">Nenhum projeto.</p>

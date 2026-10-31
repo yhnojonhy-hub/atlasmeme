@@ -238,7 +238,8 @@ export const lancamento: StepDef = {
     const balance = await solBalance(wallets.creator);
     await log(`Saldo da carteira de operação: ${balance.toFixed(4)} SOL (necessário ≥ ${needSol.toFixed(2)}).`);
     if (balance < needSol) {
-      return { status: "espera", needs: `Envie pelo menos ${needSol.toFixed(2)} SOL para ${wallets.creator} e repita.`, action: "repetir", output: { needSol, creator: wallets.creator, balance } };
+      const from = env("FAROL_OWNER_WALLET") ? ` a partir da carteira principal (${env("FAROL_OWNER_WALLET")})` : " pela sua Phantom";
+      return { status: "espera", needs: `Envie pelo menos ${needSol.toFixed(2)} SOL para a carteira de operação ${wallets.creator}${from} e repita.`, action: "repetir", output: { needSol, creator: wallets.creator, balance } };
     }
     const confirmed = run.brief.autoLaunch || input?.confirm === true;
     if (!confirmed) {

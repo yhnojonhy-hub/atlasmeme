@@ -51,6 +51,19 @@ O monitor roda dentro do processo (`src/instrumentation.ts`) e grava em `data/tr
 Modelo de referência: [h081.xyz](https://www.h081.xyz/) — site estático barato, domínio .xyz, Meteora DBC
 com 2% de taxa, LP travada após graduação, página de fatos e riscos, carteiras declaradas.
 
+### Como a sua carteira entra
+
+O Farol **não importa chaves privadas de carteiras pessoais**. O fluxo é:
+
+1. Sua Phantom/Ledger é a **carteira principal**: informe só o endereço público em `FAROL_OWNER_WALLET`. Ela aparece no
+   Financeiro com saldo.
+2. Cada projeto ganha duas carteiras próprias (operação e tesouraria), geradas e cifradas pelo cofre. O passo 7 pede que
+   você envie ~0,1 SOL da carteira principal para a de operação; só essa carteira assina o lançamento.
+3. As taxas caem nas carteiras do projeto; o repasse para a carteira principal é uma transferência normal (Phantom ou
+   exportando a chave do cofre com `FAROL_SECRET`).
+
+Se uma chave privada vazar (colada em chat, e-mail, print), a carteira está comprometida: crie outra e mova o saldo.
+
 ## O que o Farol não faz
 
 - Não cria volume, não distribui carteiras para parecer descentralizado, não promete listagem.

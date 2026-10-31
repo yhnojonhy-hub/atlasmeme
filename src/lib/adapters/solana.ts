@@ -1,4 +1,4 @@
-import { cached, TTL } from "../cache";
+﻿import { cached, TTL } from "../cache";
 import { fetchJson, timed, type Result } from "./types";
 
 /**
@@ -7,7 +7,7 @@ import { fetchJson, timed, type Result } from "./types";
  * Não envia transações. Nenhuma chave privada passa por aqui.
  */
 export const SOLANA_RPC = {
-  name: "Solana RPC (Helius)",
+  name: "Solana RPC",
   url: "https://www.helius.dev/docs",
   role: "Leitura on-chain do mint: oferta, autoridades e programa do token.",
 };
@@ -80,7 +80,7 @@ const TOKEN_2022 = "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb";
 export async function getMintInfo(mint: string): Promise<Result<MintInfo>> {
   let hit = false;
   return timed(
-    SOLANA_RPC.name,
+    `${SOLANA_RPC.name} — ${rpcLabel()}`,
     SOLANA_RPC.url,
     async () => {
       const r = await cached(`rpc:mint:${mint}`, TTL.mint, async () => {
@@ -118,7 +118,7 @@ export async function getMintInfo(mint: string): Promise<Result<MintInfo>> {
 }
 
 export async function pingRpc(): Promise<Result<{ slot: number; endpoint: string }>> {
-  return timed(SOLANA_RPC.name, SOLANA_RPC.url, async () => {
+  return timed(`${SOLANA_RPC.name} — ${rpcLabel()}`, SOLANA_RPC.url, async () => {
     const slot = await rpc<number>("getSlot", [{ commitment: "processed" }]);
     return { slot, endpoint: rpcLabel() };
   });
