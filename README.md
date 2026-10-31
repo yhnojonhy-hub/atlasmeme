@@ -124,8 +124,8 @@ data/                    projects.json, hostnames.json, runs.json, users.json, f
 bash deploy/vm-setup.sh
 cp .env.example .env && nano .env      # HELIUS_API_KEY, FAROL_PORT, FAROL_PUBLIC_URL
 docker compose up -d --build
-curl -s 'http://localhost:3030/api/health?quick=1'   # liveness (sem consultar terceiros)
-curl -s  http://localhost:3030/api/health             # estado de cada integração
+curl -s 'http://localhost:3040/api/health?quick=1'   # liveness (sem consultar terceiros)
+curl -s  http://localhost:3040/api/health             # estado de cada integração
 ```
 
 O build do `npm ci` usa a rede do host (`build.network: host`) e o container usa DNS IPv4 explícito
@@ -133,7 +133,7 @@ O build do `npm ci` usa a rede do host (`build.network: host`) e o container usa
 
 Do Windows: `.\deploy\deploy-from-windows.ps1 -Host <ip> -User <usuario>`.
 
-O container publica em `FAROL_PORT` (padrão 3030). Para expor um domínio:
+O container escuta na porta 3040 (não usa 3000, para não cruzar com outros serviços da VM) e publica em `FAROL_PORT` (padrão 3040). Para expor um domínio:
 
 - VM com nginx no host (caso atual): use `deploy/nginx-farol.conf`, troque `SEU_DOMINIO`, habilite o site e rode
   `certbot --nginx -d SEU_DOMINIO`.

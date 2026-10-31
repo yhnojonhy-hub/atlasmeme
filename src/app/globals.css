@@ -349,6 +349,7 @@ table.data td {
   display: grid;
   justify-items: center;
   padding: 0 1rem 1.5rem;
+  overflow: hidden;
 }
 
 .brand-sky {

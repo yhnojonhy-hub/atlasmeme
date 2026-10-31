@@ -2,6 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { PasswordInput } from "./PasswordInput";
 import { Field } from "./ui";
 
 export function LoginForm({ next }: { next: string }) {
@@ -33,7 +34,7 @@ export function LoginForm({ next }: { next: string }) {
         <input className="input" type="email" value={email} onChange={(e) => setEmail(e.target.value)} autoComplete="username" required autoFocus />
       </Field>
       <Field label="Senha">
-        <input className="input" type="password" value={password} onChange={(e) => setPassword(e.target.value)} autoComplete="current-password" required />
+        <PasswordInput value={password} onChange={(e) => setPassword(e.target.value)} autoComplete="current-password" required />
       </Field>
       {error && (
         <p role="alert" className="text-sm text-rock">

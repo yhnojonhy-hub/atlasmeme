@@ -12,7 +12,7 @@
 		-Server
 	}
 
-	reverse_proxy farol-web:3000 {
+	reverse_proxy farol-web:3040 {
 		health_uri /api/health
 		health_interval 30s
 	}

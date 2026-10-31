@@ -20,9 +20,9 @@ services:
       - farol-data:/data
     ports:
       # Publicado só na porta FAROL_PORT; o proxy do host (nginx) ou o Caddy opcional expõe o domínio.
-      - "${FAROL_PORT:-3030}:3000"
+      - "${FAROL_PORT:-3040}:3040"
     healthcheck:
-      test: ["CMD", "wget", "-qO-", "http://127.0.0.1:3000/api/health?quick=1"]
+      test: ["CMD", "node", "-e", "fetch('http://127.0.0.1:3040/api/health?quick=1').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"]
       interval: 30s
       timeout: 5s
       retries: 3

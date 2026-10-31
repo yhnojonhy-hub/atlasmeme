@@ -8,10 +8,12 @@ export function MintForm({
   to = "/app/mercado",
   size = "md",
   autoFocus = false,
+  label = "Endereço do token",
 }: {
   to?: string;
   size?: "md" | "lg";
   autoFocus?: boolean;
+  label?: string;
 }) {
   const router = useRouter();
   const params = useSearchParams();
@@ -26,24 +28,30 @@ export function MintForm({
       return;
     }
     setError(null);
-    router.push(`${to}?mint=${v}`);
+    const join = to.includes("?") ? "&" : "?";
+    router.push(`${to}${join}mint=${v}#consultar`);
   }
 
   const big = size === "lg";
   return (
     <form onSubmit={submit} className="w-full">
-      <div className={`flex flex-col gap-2 sm:flex-row ${big ? "" : ""}`}>
+      <label className="mb-2 block text-sm text-ink-soft" htmlFor="mint-address">
+        {label}
+      </label>
+      <div className="flex flex-col gap-2 sm:flex-row">
         <input
+          id="mint-address"
           autoFocus={autoFocus}
-          className={`input ${big ? "py-3 text-base" : ""}`}
-          placeholder="Cole o endereço do mint, por exemplo EPjF…Dt1v"
+          className={`input mono ${big ? "py-3 text-base" : ""}`}
+          placeholder="Cole o endereço do token na Solana"
           value={value}
           onChange={(e) => setValue(e.target.value)}
-          aria-label="Endereço do mint"
           spellCheck={false}
+          autoCapitalize="off"
+          autoCorrect="off"
         />
         <button className={`btn btn-beam shrink-0 ${big ? "py-3" : ""}`} type="submit">
-          Ver o que está on-chain
+          Ler este token
         </button>
       </div>
       {error && (

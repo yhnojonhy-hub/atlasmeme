@@ -1,7 +1,9 @@
 import Link from "next/link";
 import { Suspense } from "react";
 import { Logo } from "@/components/Logo";
+import { MarketView } from "@/components/MarketView";
 import { MintForm } from "@/components/MintForm";
+import { isMint } from "@/lib/adapters/types";
 import { listProjects } from "@/lib/projects/store";
 import { STAGE_LABEL } from "@/lib/projects/schema";
 
@@ -123,9 +125,11 @@ const PARTES = [
   ["Caixa", "Taxa recebida menos o gasto do projeto."],
 ];
 
-export default async function Home() {
+export default async function Home({ searchParams }: { searchParams: Promise<{ mint?: string }> }) {
+  const { mint } = await searchParams;
   const projects = await listProjects();
   const lead = projects[0];
+  const mintOk = isMint(mint);
 
   return (
     <div className="min-h-dvh">
@@ -174,7 +178,9 @@ export default async function Home() {
           <p className="text-sm text-ink-soft">
             {projects.length === 0
               ? "Nenhuma moeda plotada ainda. O emblema é a marca, não um lançamento."
-              : "O emblema mostra o ecossistema. A única moeda aberta no sistema é esta."}
+              : projects.length === 1
+                ? "O emblema mostra o ecossistema. A única moeda aberta no sistema é esta."
+                : "O emblema mostra o ecossistema. As moedas abertas estão nesta lista."}
           </p>
           {lead ? (
             <Link href={`/p/${lead.slug}`} className="mt-5 block border-t border-line pt-4">
@@ -194,16 +200,24 @@ export default async function Home() {
         </aside>
       </div>
 
-      <section className="border-t border-line">
+      <section id="consultar" className="relative z-10 border-t border-line bg-foam">
         <div className="mx-auto max-w-6xl px-5 py-10 sm:px-8 lg:px-10">
-          <h2 className="text-xl">Ler um mint</h2>
-          <p className="mt-2 max-w-xl text-sm text-ink-soft">Preço e liquidez vêm da rede. A hora da leitura fica ao lado do número.</p>
-          <div className="mt-4 max-w-xl">
+          <h2 className="text-xl">Consultar um token</h2>
+          <p className="mt-2 max-w-2xl text-sm leading-relaxed text-ink-soft">
+            O mint é o endereço desse token na Solana. Cole-o para ver o preço, a liquidez e se ainda dá para emitir mais unidades.
+            A consulta só lê a rede. Não pede carteira e não envia transação.
+          </p>
+          <div className="mt-5 max-w-2xl">
             <Suspense>
-              <MintForm />
+              <MintForm to="/" label="Endereço do token (mint)" />
             </Suspense>
           </div>
-          <p className="mt-10 max-w-xl text-sm text-mist">O AtlasMeme abre o projeto e lê o caixa. Isso não é consultoria financeira.</p>
+          {mintOk ? (
+            <div className="mt-8">
+              <MarketView mint={mint} />
+            </div>
+          ) : null}
+          <p className="mt-8 max-w-2xl text-sm text-mist">A leitura mostra o que a rede publica agora. Não é recomendação de compra.</p>
         </div>
       </section>
     </div>

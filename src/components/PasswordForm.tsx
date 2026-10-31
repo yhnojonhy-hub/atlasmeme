@@ -2,6 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { PasswordInput } from "./PasswordInput";
 import { Field } from "./ui";
 
 export function PasswordForm({ next }: { next?: string }) {
@@ -32,13 +33,13 @@ export function PasswordForm({ next }: { next?: string }) {
   return (
     <form onSubmit={submit} className="card max-w-md space-y-4 p-5">
       <Field label="Senha atual">
-        <input className="input" type="password" value={current} onChange={(e) => setCurrent(e.target.value)} autoComplete="current-password" required />
+        <PasswordInput value={current} onChange={(e) => setCurrent(e.target.value)} autoComplete="current-password" required />
       </Field>
       <Field label="Nova senha" hint="mínimo 10 caracteres; use uma frase longa">
-        <input className="input" type="password" value={nextPw} onChange={(e) => setNextPw(e.target.value)} autoComplete="new-password" required minLength={10} />
+        <PasswordInput value={nextPw} onChange={(e) => setNextPw(e.target.value)} autoComplete="new-password" required minLength={10} />
       </Field>
       <Field label="Confirmar nova senha">
-        <input className="input" type="password" value={confirm} onChange={(e) => setConfirm(e.target.value)} autoComplete="new-password" required minLength={10} />
+        <PasswordInput value={confirm} onChange={(e) => setConfirm(e.target.value)} autoComplete="new-password" required minLength={10} />
       </Field>
       {msg && (
         <p role={msg.ok ? "status" : "alert"} className={`text-sm ${msg.ok ? "text-ok" : "text-rock"}`}>

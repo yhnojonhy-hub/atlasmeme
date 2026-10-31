@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import type { PublicUser } from "@/lib/users";
+import { PasswordInput } from "./PasswordInput";
 import { Field, Pill } from "./ui";
 
 export function UsersPanel({ meId }: { meId: string }) {
@@ -114,7 +115,7 @@ export function UsersPanel({ meId }: { meId: string }) {
           <input className="input" value={name} onChange={(e) => setName(e.target.value)} maxLength={80} />
         </Field>
         <Field label="Senha provisória" hint="mín. 10 caracteres; o usuário troca no 1º acesso">
-          <input className="input" type="password" value={password} onChange={(e) => setPassword(e.target.value)} required minLength={10} autoComplete="new-password" />
+          <PasswordInput value={password} onChange={(e) => setPassword(e.target.value)} required minLength={10} autoComplete="new-password" />
         </Field>
         <Field label="Papel">
           <select className="input" value={role} onChange={(e) => setRole(e.target.value as "admin" | "operador")}>

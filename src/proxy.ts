@@ -66,7 +66,9 @@ export function proxy(req: NextRequest) {
   const { pathname } = req.nextUrl;
   const method = req.method.toUpperCase();
 
-  const guarded = pathname.startsWith("/app") || pathname === "/novo" || isProtectedApi(pathname, method);
+  // "/app" sem a barra também casa com /apple-touch-icon.png e manda o ícone para o login.
+  const isApp = pathname === "/app" || pathname.startsWith("/app/");
+  const guarded = isApp || pathname === "/novo" || isProtectedApi(pathname, method);
   if (guarded && authEnabled()) {
     const isApi = pathname.startsWith("/api");
     const session = liveSession(req);
@@ -98,7 +100,7 @@ export function proxy(req: NextRequest) {
   }
 
   const host = (req.headers.get("host") ?? "").split(":")[0].toLowerCase();
-  if (!host || pathname.startsWith("/_next") || pathname.startsWith("/api") || pathname.startsWith("/p/") || pathname.startsWith("/app") || pathname === "/entrar") {
+  if (!host || pathname.startsWith("/_next") || pathname.startsWith("/api") || pathname.startsWith("/p/") || isApp || pathname === "/entrar") {
     return NextResponse.next();
   }
   let slug: string | undefined = hostMap()[host];
