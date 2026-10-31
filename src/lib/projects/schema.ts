@@ -95,6 +95,26 @@ export const ProjectSchema = z.object({
       "Não há promessa de valorização, rendimento ou proteção de capital.",
       "Capitalização de mercado não é dinheiro disponível para saque.",
     ]),
+  /** Preenchido pelo Lançador: onde e com que taxa o token foi (ou será) emitido. */
+  launch: z
+    .object({
+      venue: z.enum(["meteora-dbc", "pump.fun", "manual"]).default("meteora-dbc"),
+      tradingFeeBps: z.number().int().min(10).max(1000).default(200),
+      creatorSharePct: z.number().min(0).max(100).default(80),
+      initialMarketCapSol: z.number().positive().default(30),
+      migrationMarketCapSol: z.number().positive().default(400),
+      configAddress: z.string().optional(),
+      poolAddress: z.string().optional(),
+      launchedAt: z.string().optional(),
+      txSignature: z.string().optional(),
+    })
+    .optional(),
+  /** Hostnames onde o site responde além de /p/slug (subdomínio do Farol e domínio próprio). */
+  hostnames: z.array(z.string().max(253)).default([]),
+  /** Execução do Lançador que criou este projeto. */
+  runId: z.string().optional(),
+  /** Entra no monitor contínuo (snapshots de mercado e taxas). */
+  tracking: z.boolean().default(false),
   createdAt: z.string().optional(),
   updatedAt: z.string().optional(),
 });

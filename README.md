@@ -7,11 +7,40 @@ abas para medir o piloto: mercado, taxas, carteiras, comunidade, negócio, risco
 Cada número vem com fonte e horário. FDV não é caixa. Carteiras da equipe são declaradas por função,
 nunca apresentadas como usuários independentes.
 
+## Iniciar projeto (pipeline automático)
+
+Na aba **Iniciar**, um brief de três linhas (nome, ticker, tema) dispara a sequência completa. Cada
+passo é persistido em `data/runs.json`, é idempotente e pode ser repetido; o que depende de você para
+em **espera** e diz o que falta.
+
+| # | Passo | O que faz | Precisa de |
+|---|---|---|---|
+| 1 | Identidade | slug, cor, hostname `slug.FAROL_BASE_DOMAIN` | — |
+| 2 | Carteiras | cria "operação" e "tesouraria" (ed25519, cifradas AES-256-GCM em `data/vault/`) | `FAROL_SECRET` |
+| 3 | Site | publica `/p/slug` com carteiras declaradas, alocações, políticas e avisos | — |
+| 4 | Domínio | verifica, registra `.xyz` (≤ `PORKBUN_MAX_USD`) e aponta DNS para `FAROL_PUBLIC_IP` | chaves Porkbun (senão pula) |
+| 5 | Social | bio, anúncio, calendário de 7 dias, regras; publica o anúncio na conta oficial do X | chaves X (senão só gera o kit) |
+| 6 | Curva | configura a Meteora DBC: taxa fixa (padrão 2%), parte da operação/tesouraria, market cap inicial e de graduação, migração para DAMM v2 com 100% da LP travada, vesting da equipe | — |
+| 7 | Lançamento | cria config + pool on-chain, grava mint, inicia acompanhamento | `FAROL_LAUNCH_ENABLED=1`, SOL na carteira de operação, confirmação |
+| 8 | Listagem | confirma indexação no DEX Screener, gera links (Jupiter, Solscan, Meteora, Birdeye) e lista submissões manuais | — |
+| 9 | Acompanhamento | monitor a cada minuto: preço, liquidez, progresso da curva, taxas acumuladas, P&L em caixa, alertas | — |
+
+**Acesso.** Com `FAROL_ADMIN_TOKEN` no `.env`, o painel `/app`, o assistente `/novo` e as APIs que escrevem ou gastam
+(`/api/runs*`, `/api/wallets`, `/api/projects/*/claim`, `POST/PATCH /api/projects*`) exigem o token: cookie via `/entrar`
+no navegador, ou header `x-farol-token` em scripts. Sites públicos e leituras continuam abertos. Em VM exposta, defina-o.
+
+O monitor roda dentro do processo (`src/instrumentation.ts`) e grava em `data/track/<slug>.json`. O botão
+**Reclamar taxas** envia as taxas acumuladas para as carteiras de operação e tesouraria.
+
+Modelo de referência: [h081.xyz](https://www.h081.xyz/) — site estático barato, domínio .xyz, Meteora DBC
+com 2% de taxa, LP travada após graduação, página de fatos e riscos, carteiras declaradas.
+
 ## O que o Farol não faz
 
-- Não emite token nem envia transações. Só leitura on-chain.
 - Não cria volume, não distribui carteiras para parecer descentralizado, não promete listagem.
-- Não custodia ativos. Nenhuma chave privada passa pelo sistema.
+- Não cria contas em redes sociais; só publica, via API, na conta oficial que você conectou.
+- Só assina transações do próprio lançamento e da reclamação de taxas, com carteiras que ele mesmo criou e cifrou.
+  Chaves nunca saem do servidor em texto claro, exceto por exportação explícita com `FAROL_SECRET`.
 
 ## Rodar localmente
 
@@ -27,13 +56,19 @@ npm run dev                 # http://localhost:3000
 src/app/                 páginas (App Router)
   page.tsx               início: hero + "cole o mint"
   app/<aba>/             painel: mercado, fees, carteiras, comunidade, negocio, risco, lancamento, apis
-  novo/                  assistente de criação de site de projeto (4 passos)
-  p/[slug]/              site público gerado por projeto
-  api/                   BFF: market, token, fees, health, projects
+    iniciar/             botão "Iniciar projeto", lista de execuções e progresso ao vivo
+  novo/                  assistente manual de site de projeto (4 passos)
+  p/[slug]/              site público gerado por projeto (também servido por slug.FAROL_BASE_DOMAIN)
+  api/                   BFF: market, token, fees, health, projects, runs, wallets
+src/proxy.ts             mapeia hostname (subdomínio ou domínio próprio) → /p/slug
+src/instrumentation.ts   liga o monitor contínuo no arranque
 src/lib/adapters/        uma integração por arquivo, com contrato Sourced<T> (fonte, horário, latência)
+src/lib/launcher/        Run/Step, runner sequencial e os 9 passos
+src/lib/wallets/vault.ts carteiras cifradas
+src/lib/tracker/         snapshots, eventos, P&L
 src/lib/projects/        schema (zod) e store (JSON em disco, volume no Docker)
 src/lib/metrics/         matemática do negócio (funções puras)
-data/projects.json       seed do primeiro projeto
+data/                    projects.json, hostnames.json, runs.json, vault/, track/
 ```
 
 ## Integrações
@@ -43,6 +78,10 @@ data/projects.json       seed do primeiro projeto
 | Solana RPC (Helius ou público) | oferta, decimais, autoridades do mint | opcional (`HELIUS_API_KEY`) |
 | DEX Screener | pares, preço, liquidez, volume | não |
 | Pump.fun fees | tabela oficial de taxas por fase e market cap | não (estática, versionada) |
+| Meteora DBC (SDK) | criar config/pool, ler progresso e taxas, reclamar taxas | `FAROL_LAUNCH_ENABLED=1` + SOL |
+| Cofre local | gerar e cifrar carteiras | `FAROL_SECRET` |
+| Porkbun | verificar/registrar domínio e DNS | `PORKBUN_API_KEY`, `PORKBUN_SECRET_KEY` |
+| X API v2 | publicar anúncio na conta oficial | `X_API_KEY/SECRET`, `X_ACCESS_TOKEN/SECRET` |
 
 ## Deploy na VM (Docker)
 
@@ -67,6 +106,16 @@ O container publica em `FAROL_PORT` (padrão 3030). Para expor um domínio:
 - VM sem proxy: `docker compose --profile proxy up -d` com `FAROL_DOMAIN=seu-dominio.com`; o Caddy emite o certificado.
 
 Em ambos, defina `FAROL_PUBLIC_URL=https://seu-dominio.com` no `.env`.
+
+### Subdomínio por projeto
+
+Com `FAROL_BASE_DOMAIN=seu-dominio.com`, cada projeto responde em `https://<slug>.seu-dominio.com`:
+
+1. DNS: registro `A` para `*.seu-dominio.com` → IP da VM.
+2. Certificado wildcard no nginx do host (`certbot --nginx -d seu-dominio.com -d '*.seu-dominio.com'` com desafio DNS)
+   e `server_name seu-dominio.com *.seu-dominio.com;` no `deploy/nginx-farol.conf`.
+3. Domínios próprios registrados pelo passo 4 entram em `data/hostnames.json` e são servidos do mesmo jeito
+   (certificado via `certbot --nginx -d <dominio>` depois que o DNS propagar).
 
 ## Latência
 

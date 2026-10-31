@@ -51,6 +51,22 @@ export async function getPairs(mint: string): Promise<Result<Pair[]>> {
   );
 }
 
+const WSOL = "So11111111111111111111111111111111111111112";
+
+/** Cotação SOL/USD pelo par mais líquido do wSOL (cache 60 s). Null se o indexador falhar. */
+export async function getSolUsd(): Promise<number | null> {
+  try {
+    const r = await cached("dex:solusd", 60_000, async () => {
+      const pairs = await fetchJson<Pair[]>(`https://api.dexscreener.com/token-pairs/v1/solana/${WSOL}`);
+      const best = pairs.filter((p) => p.baseToken?.address === WSOL && p.priceUsd).sort((a, b) => (b.liquidity?.usd ?? 0) - (a.liquidity?.usd ?? 0))[0];
+      return best ? Number(best.priceUsd) : null;
+    });
+    return r.value;
+  } catch {
+    return null;
+  }
+}
+
 export async function pingDexscreener(): Promise<Result<{ status: string }>> {
   return timed(DEXSCREENER.name, DEXSCREENER.url, async () => {
     // Endpoint leve de perfis; serve como verificação de disponibilidade.

@@ -3,6 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Mark } from "@/components/Logo";
 import { MarketView } from "@/components/MarketView";
+import { TrackPanel } from "@/components/TrackPanel";
 import { Pill, Section } from "@/components/ui";
 import { fmt } from "@/lib/format";
 import { ROLE_LABEL, STAGE_LABEL } from "@/lib/projects/schema";
@@ -78,6 +79,23 @@ export default async function ProjectSite({ params }: { params: Promise<{ slug: 
                 </div>
               </div>
               <MarketView mint={p.mint} />
+              {p.launch?.poolAddress && (
+                <p className="text-xs text-mist">
+                  Lançado na Meteora DBC em {p.launch.launchedAt ? new Date(p.launch.launchedAt).toLocaleString("pt-BR") : "—"} · taxa {p.launch.tradingFeeBps / 100}% por negociação ·{" "}
+                  <a className="underline" href={`https://solscan.io/account/${p.launch.poolAddress}`} target="_blank" rel="noreferrer">
+                    pool
+                  </a>
+                  {p.launch.txSignature && (
+                    <>
+                      {" · "}
+                      <a className="underline" href={`https://solscan.io/tx/${p.launch.txSignature}`} target="_blank" rel="noreferrer">
+                        transação
+                      </a>
+                    </>
+                  )}
+                </p>
+              )}
+              {p.tracking && <TrackPanel slug={p.slug} publicView />}
             </>
           ) : (
             <div className="card p-5 text-sm text-ink-soft">

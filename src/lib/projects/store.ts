@@ -46,7 +46,15 @@ async function writeAll(list: Project[]) {
   const tmp = `${FILE}.tmp`;
   await fs.writeFile(tmp, JSON.stringify(list, null, 2), "utf8");
   await fs.rename(tmp, FILE);
+  // Mapa hostname → slug lido pelo proxy (sem parsear todos os projetos a cada requisição).
+  const hosts: Record<string, string> = {};
+  for (const p of list) for (const h of p.hostnames ?? []) hosts[h.toLowerCase()] = p.slug;
+  const htmp = `${HOSTS_FILE}.tmp`;
+  await fs.writeFile(htmp, JSON.stringify(hosts), "utf8");
+  await fs.rename(htmp, HOSTS_FILE);
 }
+
+export const HOSTS_FILE = path.join(DATA_DIR, "hostnames.json");
 
 export async function listProjects() {
   return readAll();

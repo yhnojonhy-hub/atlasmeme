@@ -6,6 +6,7 @@ import type { ReactNode } from "react";
 import { Logo } from "./Logo";
 
 export const TABS = [
+  { href: "/app/iniciar", label: "Iniciar projeto", short: "Iniciar", desc: "Do brief ao lucro, automático" },
   { href: "/app/mercado", label: "Mercado", short: "Mercado", desc: "Preço, liquidez e pool" },
   { href: "/app/fees", label: "Taxas do criador", short: "Taxas", desc: "Quanto cada fase paga" },
   { href: "/app/carteiras", label: "Carteiras", short: "Carteiras", desc: "Quem é quem, declarado" },
@@ -42,8 +43,11 @@ export function Shell({ children }: { children: ReactNode }) {
           })}
         </nav>
         <div className="space-y-2 px-5 py-5 text-xs text-mist">
-          <Link href="/novo" className="btn btn-primary w-full justify-center text-sm">
-            Criar site de projeto
+          <Link href="/app/iniciar" className="btn btn-beam w-full justify-center text-sm">
+            Iniciar projeto
+          </Link>
+          <Link href="/novo" className="btn btn-ghost w-full justify-center text-sm">
+            Só o site, à mão
           </Link>
           <p>Números com fonte e horário. FDV não é caixa.</p>
         </div>
@@ -52,15 +56,15 @@ export function Shell({ children }: { children: ReactNode }) {
       <div className="flex min-h-dvh flex-col">
         <header className="flex items-center justify-between border-b border-line bg-paper px-4 py-3 lg:hidden">
           <Logo compact />
-          <Link href="/novo" className="btn btn-primary px-3 py-2 text-sm">
-            Criar site
+          <Link href="/app/iniciar" className="btn btn-beam px-3 py-2 text-sm">
+            Iniciar
           </Link>
         </header>
-        <main className="flex-1 px-4 py-6 pb-24 sm:px-6 lg:px-10 lg:py-8 lg:pb-10">
+        <main className="flex-1 px-4 py-6 pb-36 sm:px-6 lg:px-10 lg:py-8 lg:pb-10">
           <div className="mx-auto w-full max-w-6xl space-y-8">{children}</div>
         </main>
         <nav
-          className="fixed inset-x-0 bottom-0 z-20 grid grid-cols-4 gap-1 border-t border-line bg-paper px-2 py-1.5 lg:hidden"
+          className="fixed inset-x-0 bottom-0 z-20 grid grid-cols-3 gap-1 border-t border-line bg-paper px-2 py-1.5 lg:hidden"
           aria-label="Abas"
         >
           {TABS.map((t) => {

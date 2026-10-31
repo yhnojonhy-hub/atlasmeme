@@ -1,7 +1,11 @@
 import { DEXSCREENER, pingDexscreener } from "./dexscreener";
+import { METEORA_DBC } from "./meteora";
+import { PORKBUN, porkbunConfigured } from "./porkbun";
 import { PUMP_FEES } from "./pumpfees";
 import { pingRpc, rpcLabel, SOLANA_RPC } from "./solana";
 import type { Result } from "./types";
+import { X_API, xConfigured } from "./x";
+import { vaultReady } from "../wallets/vault";
 
 /**
  * Registro das integrações. Cada uma declara o que faz e o que NÃO faz.
@@ -13,7 +17,7 @@ export type Integration = {
   role: string;
   notDoes: string;
   docs: string;
-  kind: "leitura on-chain" | "indexador" | "tabela de referência" | "interno";
+  kind: "leitura on-chain" | "indexador" | "tabela de referência" | "interno" | "escrita on-chain" | "serviço externo";
   cacheTtl: string;
   requiresKey: boolean;
   configured: boolean;
@@ -56,6 +60,50 @@ export function integrations(): Integration[] {
       cacheTtl: `estática (${PUMP_FEES.updatedAt})`,
       requiresKey: false,
       configured: true,
+    },
+    {
+      id: "meteora-dbc",
+      name: METEORA_DBC.name,
+      role: METEORA_DBC.role,
+      notDoes: "Não compra o próprio token nem opera carteiras de terceiros; só cria config/pool, lê e reclama taxas das carteiras declaradas.",
+      docs: METEORA_DBC.url,
+      kind: "escrita on-chain",
+      cacheTtl: "sem cache (transações) · leitura por ciclo do monitor",
+      requiresKey: true,
+      configured: process.env.FAROL_LAUNCH_ENABLED === "1",
+    },
+    {
+      id: "vault",
+      name: "Cofre de carteiras (Farol)",
+      role: "Gera e guarda cifradas as carteiras de operação e tesouraria de cada projeto; assina lançamento e claims.",
+      notDoes: "Não cria carteiras disfarçadas de usuários; toda carteira é declarada no site por função.",
+      docs: "/app/carteiras",
+      kind: "interno",
+      cacheTtl: "arquivo cifrado em disco (volume)",
+      requiresKey: true,
+      configured: vaultReady(),
+    },
+    {
+      id: "porkbun",
+      name: PORKBUN.name,
+      role: PORKBUN.role,
+      notDoes: "Não renova sozinho; não registra acima de PORKBUN_MAX_USD.",
+      docs: PORKBUN.url,
+      kind: "serviço externo",
+      cacheTtl: "sem cache",
+      requiresKey: true,
+      configured: porkbunConfigured(),
+    },
+    {
+      id: "x-api",
+      name: X_API.name,
+      role: X_API.role,
+      notDoes: "Não cria contas, não segue nem comenta em massa; publica só o que o kit gerou.",
+      docs: X_API.url,
+      kind: "serviço externo",
+      cacheTtl: "sem cache",
+      requiresKey: true,
+      configured: xConfigured(),
     },
     {
       id: "projects-store",
