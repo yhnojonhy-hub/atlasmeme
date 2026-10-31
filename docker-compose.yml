@@ -1,0 +1,47 @@
+name: farol
+
+services:
+  farol-web:
+    build: .
+    image: farol/web:latest
+    container_name: farol-web
+    restart: unless-stopped
+    env_file: .env
+    environment:
+      FAROL_REGION: ${FAROL_REGION:-vm}
+    volumes:
+      - farol-data:/data
+    expose:
+      - "3000"
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://127.0.0.1:3000/api/health"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+    logging:
+      driver: json-file
+      options: { max-size: "10m", max-file: "5" }
+
+  farol-caddy:
+    image: caddy:2-alpine
+    container_name: farol-caddy
+    restart: unless-stopped
+    depends_on:
+      - farol-web
+    ports:
+      - "80:80"
+      - "443:443"
+    environment:
+      FAROL_DOMAIN: ${FAROL_DOMAIN:-:80}
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy-data:/data
+      - caddy-config:/config
+    logging:
+      driver: json-file
+      options: { max-size: "10m", max-file: "5" }
+
+volumes:
+  farol-data:
+  caddy-data:
+  caddy-config:

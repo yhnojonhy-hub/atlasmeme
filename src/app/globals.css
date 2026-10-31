@@ -1,26 +1,230 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  /* Paleta Farol: noite-mar, espuma, feixe âmbar, maré, rocha, névoa */
+  --ink: #0e1b2a;
+  --ink-soft: #27394a;
+  --foam: #f3f6f5;
+  --foam-2: #e8eeec;
+  --paper: #ffffff;
+  --beam: #f2b134;
+  --beam-deep: #c98a12;
+  --tide: #1d6b74;
+  --tide-soft: #d9ecee;
+  --rock: #c2453a;
+  --rock-soft: #f6dedb;
+  --mist: #8fa3ae;
+  --line: #d5dee2;
+  --ok: #2f7d4f;
+  --ok-soft: #dcefe3;
 }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-ink: var(--ink);
+  --color-ink-soft: var(--ink-soft);
+  --color-foam: var(--foam);
+  --color-foam-2: var(--foam-2);
+  --color-paper: var(--paper);
+  --color-beam: var(--beam);
+  --color-beam-deep: var(--beam-deep);
+  --color-tide: var(--tide);
+  --color-tide-soft: var(--tide-soft);
+  --color-rock: var(--rock);
+  --color-rock-soft: var(--rock-soft);
+  --color-mist: var(--mist);
+  --color-line: var(--line);
+  --color-ok: var(--ok);
+  --color-ok-soft: var(--ok-soft);
+  --font-display: var(--font-bricolage);
+  --font-sans: var(--font-figtree);
+  --radius-card: 14px;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+html {
+  scroll-behavior: smooth;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--foam);
+  color: var(--ink);
+  font-family: var(--font-figtree), system-ui, sans-serif;
+  font-feature-settings: "tnum" 1, "cv11" 1;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1,
+h2,
+h3,
+.display {
+  font-family: var(--font-bricolage), var(--font-figtree), sans-serif;
+  letter-spacing: -0.01em;
+}
+
+.num {
+  font-variant-numeric: tabular-nums;
+}
+
+/* Feixe do farol: a única animação não disparada pelo usuário. */
+@keyframes sweep {
+  from {
+    transform: rotate(-28deg);
+  }
+  to {
+    transform: rotate(28deg);
+  }
+}
+
+.beam {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.beam::before {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 100%;
+  width: 220vmax;
+  height: 220vmax;
+  margin-left: -110vmax;
+  margin-top: -110vmax;
+  transform-origin: 50% 50%;
+  background: conic-gradient(
+    from 262deg at 50% 50%,
+    transparent 0deg,
+    rgba(242, 177, 52, 0.42) 7deg,
+    rgba(242, 177, 52, 0.08) 15deg,
+    transparent 17deg
+  );
+  animation: sweep 11s ease-in-out infinite alternate;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .beam::before {
+    animation: none;
+    transform: rotate(0deg);
+  }
+}
+
+:focus-visible {
+  outline: 2px solid var(--beam-deep);
+  outline-offset: 2px;
+}
+
+.card {
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-card);
+}
+
+.input {
+  width: 100%;
+  border: 1px solid var(--line);
+  background: var(--paper);
+  border-radius: 10px;
+  padding: 0.65rem 0.8rem;
+  font-size: 0.95rem;
+  color: var(--ink);
+}
+
+.input:focus {
+  border-color: var(--tide);
+  outline: none;
+  box-shadow: 0 0 0 3px var(--tide-soft);
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  border-radius: 10px;
+  padding: 0.65rem 1rem;
+  font-weight: 600;
+  font-size: 0.95rem;
+  transition: background-color 120ms ease, color 120ms ease;
+}
+
+.btn-primary {
+  background: var(--ink);
+  color: var(--foam);
+}
+
+.btn-primary:hover {
+  background: var(--ink-soft);
+}
+
+.btn-beam {
+  background: var(--beam);
+  color: var(--ink);
+}
+
+.btn-beam:hover {
+  background: #f7c25a;
+}
+
+.btn-ghost {
+  border: 1px solid var(--line);
+  background: var(--paper);
+  color: var(--ink);
+}
+
+.btn-ghost:hover {
+  background: var(--foam-2);
+}
+
+.pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  border-radius: 999px;
+  padding: 0.2rem 0.6rem;
+  font-size: 0.78rem;
+  font-weight: 600;
+}
+
+.tab-link {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  border-radius: 10px;
+  padding: 0.55rem 0.7rem;
+  color: var(--ink-soft);
+  font-weight: 500;
+}
+
+.tab-link:hover {
+  background: var(--foam-2);
+}
+
+.tab-link[aria-current="page"] {
+  background: var(--ink);
+  color: var(--foam);
+}
+
+table.data {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.92rem;
+}
+
+table.data th {
+  text-align: left;
+  font-weight: 600;
+  color: var(--ink-soft);
+  padding: 0.5rem 0.6rem;
+  border-bottom: 1px solid var(--line);
+}
+
+table.data td {
+  padding: 0.55rem 0.6rem;
+  border-bottom: 1px solid var(--foam-2);
+  vertical-align: top;
+}
+
+.mono {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.85em;
+  word-break: break-all;
 }

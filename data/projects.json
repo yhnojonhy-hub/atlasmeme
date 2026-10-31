@@ -1,0 +1,56 @@
+[
+  {
+    "slug": "farol-demo",
+    "name": "Farol Demo",
+    "ticker": "FAROL",
+    "tagline": "Projeto de exemplo para mostrar como um site de comunidade fica no Farol.",
+    "about": "Este projeto é um exemplo. O mint abaixo é o USDC da Solana, usado só para demonstrar as leituras on-chain e de indexador com dados reais. Nenhum valor aqui é recomendação.",
+    "accent": "#F2B134",
+    "stage": "ensaio",
+    "network": "solana",
+    "mint": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+    "launchpad": "nenhum",
+    "links": {
+      "site": "https://example.org",
+      "x": "https://x.com/",
+      "telegram": "https://t.me/",
+      "discord": ""
+    },
+    "wallets": [
+      {
+        "address": "11111111111111111111111111111111",
+        "role": "tesouraria",
+        "label": "Tesouraria (multisig Squads) — ilustrativo",
+        "evidenceUrl": ""
+      },
+      {
+        "address": "So11111111111111111111111111111111111111112",
+        "role": "equipe",
+        "label": "Equipe — ilustrativo",
+        "evidenceUrl": ""
+      }
+    ],
+    "supply": {
+      "total": 1000000000,
+      "allocations": [
+        { "name": "Curva / mercado", "pct": 80, "vesting": "sem bloqueio; vendida pela curva" },
+        { "name": "Tesouraria da comunidade", "pct": 10, "vesting": "multisig; uso publicado mensalmente" },
+        { "name": "Equipe", "pct": 10, "vesting": "cliff 3 meses, linear 12 meses" }
+      ]
+    },
+    "policies": {
+      "mintAuthority": "revogada",
+      "freezeAuthority": "revogada",
+      "liquidity": "Pool canônico no PumpSwap com LP queimada na migração. Não há retirada de liquidez pela equipe.",
+      "teamSales": "Vendas da equipe só dentro do calendário de vesting e anunciadas com 7 dias de antecedência.",
+      "feesUse": "Taxas do criador reclamadas semanalmente, publicadas na página de tesouraria e usadas em conteúdo, moderação e infraestrutura."
+    },
+    "disclosures": [
+      "A equipe mantém posição no token e recebe taxas do criador quando aplicável.",
+      "Não há promessa de valorização, rendimento ou proteção de capital.",
+      "Capitalização de mercado não é dinheiro disponível para saque."
+    ],
+    "createdAt": "2026-10-30T00:00:00.000Z",
+    "updatedAt": "2026-10-30T00:00:00.000Z"
+  }
+]
