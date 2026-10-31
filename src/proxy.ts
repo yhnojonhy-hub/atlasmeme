@@ -1,10 +1,11 @@
-import { readFileSync } from "node:fs";
+import { readFileSync, statSync } from "node:fs";
 import path from "node:path";
 import { NextResponse, type NextRequest } from "next/server";
-import { adminToken, COOKIE, isProtectedApi, tokenMatches } from "@/lib/auth";
+import { authEnabled, COOKIE, isAdminOnly, isProtectedApi, readSessionToken, tokenMatches } from "@/lib/auth";
 
 /**
- * 1) Trava de operador: com FAROL_ADMIN_TOKEN, /app e as APIs que escrevem exigem token.
+ * 1) Trava de acesso (checagem otimista, só assinatura do cookie — sem disco):
+ *    /app, /novo e as APIs que escrevem/gastam exigem sessão; /app/admin e /app/financeiro exigem admin.
  * 2) Sites por hostname: `slug.FAROL_BASE_DOMAIN` e domínios próprios registrados no projeto
  *    são servidos como /p/slug. Custo zero por site: um DNS wildcard e um certificado wildcard.
  */
@@ -25,23 +26,75 @@ function hostMap() {
   return hosts;
 }
 
-function operatorOk(req: NextRequest) {
-  if (!adminToken()) return true;
-  return tokenMatches(req.headers.get("x-farol-token") ?? req.cookies.get(COOKIE)?.value);
+/**
+ * Papel atual por id de usuário, lido de users.json e recarregado só quando o arquivo muda (mtime):
+ * revoga na hora sessões de usuários removidos ou rebaixados. Um stat() por requisição protegida.
+ */
+let roles: Record<string, "admin" | "operador"> | null = null;
+let rolesMtime = -1;
+function roleOf(uid: string): "admin" | "operador" | null {
+  const file = path.join(DATA_DIR, "users.json");
+  let mtime = 0;
+  try {
+    mtime = statSync(file).mtimeMs;
+  } catch {
+    roles = null;
+    rolesMtime = -1;
+    return null;
+  }
+  if (mtime !== rolesMtime) {
+    try {
+      const users = JSON.parse(readFileSync(file, "utf8")) as { id: string; role: "admin" | "operador" }[];
+      roles = Object.fromEntries(users.map((u) => [u.id, u.role]));
+    } catch {
+      roles = null;
+    }
+    rolesMtime = mtime;
+  }
+  return roles?.[uid] ?? null;
+}
+
+function liveSession(req: NextRequest) {
+  if (tokenMatches(req.headers.get("x-farol-token"))) return { role: "admin" as const };
+  const s = readSessionToken(req.cookies.get(COOKIE)?.value);
+  if (!s) return null;
+  const role = roleOf(s.uid);
+  return role ? { role } : null;
 }
 
 export function proxy(req: NextRequest) {
   const { pathname } = req.nextUrl;
   const method = req.method.toUpperCase();
 
-  if (pathname.startsWith("/app") || pathname === "/novo" || isProtectedApi(pathname, method)) {
-    if (!operatorOk(req)) {
-      if (pathname.startsWith("/api")) return NextResponse.json({ ok: false, error: "Token de operador ausente ou inválido." }, { status: 401 });
+  const guarded = pathname.startsWith("/app") || pathname === "/novo" || isProtectedApi(pathname, method);
+  if (guarded && authEnabled()) {
+    const isApi = pathname.startsWith("/api");
+    const session = liveSession(req);
+    if (!session) {
+      if (isApi) return NextResponse.json({ ok: false, error: "Entre com e-mail e senha para continuar." }, { status: 401 });
       const url = req.nextUrl.clone();
       url.pathname = "/entrar";
       url.search = `?next=${encodeURIComponent(pathname + req.nextUrl.search)}`;
       return NextResponse.redirect(url);
     }
+    if (isAdminOnly(pathname) && session.role !== "admin") {
+      if (isApi) return NextResponse.json({ ok: false, error: "Só administradores." }, { status: 403 });
+      const url = req.nextUrl.clone();
+      url.pathname = "/app/iniciar";
+      url.search = "";
+      return NextResponse.redirect(url);
+    }
+    if (pathname === "/app") {
+      const url = req.nextUrl.clone();
+      url.pathname = session.role === "admin" ? "/app/admin" : "/app/iniciar";
+      return NextResponse.redirect(url);
+    }
+  }
+  if (pathname === "/entrar" && authEnabled() && liveSession(req)) {
+    const url = req.nextUrl.clone();
+    url.pathname = "/app";
+    url.search = "";
+    return NextResponse.redirect(url);
   }
 
   const host = (req.headers.get("host") ?? "").split(":")[0].toLowerCase();

@@ -6,7 +6,8 @@ import { Field } from "./ui";
 
 export function LoginForm({ next }: { next: string }) {
   const router = useRouter();
-  const [token, setToken] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
 
@@ -14,20 +15,25 @@ export function LoginForm({ next }: { next: string }) {
     e.preventDefault();
     setBusy(true);
     setError(null);
-    const r = await fetch("/api/auth", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ token }) });
-    if (r.ok) {
-      router.push(next);
+    try {
+      const r = await fetch("/api/auth", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ email, password }) });
+      const j = await r.json();
+      if (!r.ok) throw new Error(j.error ?? "Não foi possível entrar.");
+      router.push(j.user?.mustChangePassword ? `/app/conta?trocar=1&next=${encodeURIComponent(next)}` : next);
       router.refresh();
-      return;
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Erro");
+      setBusy(false);
     }
-    setError("Token inválido.");
-    setBusy(false);
   }
 
   return (
     <form onSubmit={submit} className="card space-y-4 p-5">
-      <Field label="Token de operador">
-        <input className="input" type="password" value={token} onChange={(e) => setToken(e.target.value)} autoComplete="current-password" required minLength={12} />
+      <Field label="E-mail">
+        <input className="input" type="email" value={email} onChange={(e) => setEmail(e.target.value)} autoComplete="username" required autoFocus />
+      </Field>
+      <Field label="Senha">
+        <input className="input" type="password" value={password} onChange={(e) => setPassword(e.target.value)} autoComplete="current-password" required />
       </Field>
       {error && (
         <p role="alert" className="text-sm text-rock">

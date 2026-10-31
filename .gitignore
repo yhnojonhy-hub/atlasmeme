@@ -45,6 +45,8 @@ next-env.d.ts
 .env
 /data/runs.json
 /data/hostnames.json
+/data/users.json
+/data/finance.json
 /data/vault/
 /data/track/
 

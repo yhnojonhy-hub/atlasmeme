@@ -25,9 +25,25 @@ em **espera** e diz o que falta.
 | 8 | Listagem | confirma indexação no DEX Screener, gera links (Jupiter, Solscan, Meteora, Birdeye) e lista submissões manuais | — |
 | 9 | Acompanhamento | monitor a cada minuto: preço, liquidez, progresso da curva, taxas acumuladas, P&L em caixa, alertas | — |
 
-**Acesso.** Com `FAROL_ADMIN_TOKEN` no `.env`, o painel `/app`, o assistente `/novo` e as APIs que escrevem ou gastam
-(`/api/runs*`, `/api/wallets`, `/api/projects/*/claim`, `POST/PATCH /api/projects*`) exigem o token: cookie via `/entrar`
-no navegador, ou header `x-farol-token` em scripts. Sites públicos e leituras continuam abertos. Em VM exposta, defina-o.
+## Acesso, administração e financeiro
+
+**Login por e-mail e senha.** Ativo quando há `FAROL_SECRET` (assina o cookie de sessão httpOnly, HMAC-SHA256, 14 dias).
+Senhas ficam só como hash scrypt em `data/users.json`. Primeiro administrador: `FAROL_ADMIN_EMAIL` + `FAROL_ADMIN_PASSWORD`
+no `.env`, reinicie, entre em `/entrar` e remova a senha do `.env`; o painel pede a troca no primeiro acesso.
+Scripts usam o header `x-farol-token` (`FAROL_ADMIN_TOKEN`). Padrão do guia oficial do Next.js 16: o `proxy.ts` só
+valida a assinatura (checagem otimista), o layout de `/app` e cada rota de API fazem a verificação autoritativa.
+
+| Área | Quem | O que |
+|---|---|---|
+| `/app/admin` Visão geral | admin | todas as moedas, sites, redes, carteiras e execuções criadas; custos e caixa por projeto; usuários (criar, papel, redefinir senha, remover) |
+| `/app/financeiro` | admin | lucro em caixa, a reclamar, custos por projeto (automação + manuais), infra fixa mensal rateada por dia, resultado líquido, saldo das carteiras |
+| `/app/iniciar`, demais abas | admin e operador | operar projetos |
+| `/app/conta` | todos | trocar a própria senha |
+| `/p/<slug>`, leituras `GET /api/*` | público | sites e dados públicos |
+
+Papéis: **admin** (tudo) e **operador** (opera projetos, não vê financeiro nem usuários). Sempre deve existir ao menos um admin.
+As APIs que escrevem ou gastam (`/api/runs*`, `/api/wallets`, `/api/users`, `/api/finance`, `/api/projects/*/claim`,
+`POST/PATCH /api/projects*`) exigem sessão; `/api/users` e `/api/finance` exigem admin.
 
 O monitor roda dentro do processo (`src/instrumentation.ts`) e grava em `data/track/<slug>.json`. O botão
 **Reclamar taxas** envia as taxas acumuladas para as carteiras de operação e tesouraria.
@@ -56,7 +72,11 @@ npm run dev                 # http://localhost:3000
 src/app/                 páginas (App Router)
   page.tsx               início: hero + "cole o mint"
   app/<aba>/             painel: mercado, fees, carteiras, comunidade, negocio, risco, lancamento, apis
+    admin/               visão geral do administrador (macro) + usuários
+    financeiro/          lucro, custos por projeto, infra fixa, resultado líquido
+    conta/               trocar senha
     iniciar/             botão "Iniciar projeto", lista de execuções e progresso ao vivo
+  entrar/                login por e-mail e senha
   novo/                  assistente manual de site de projeto (4 passos)
   p/[slug]/              site público gerado por projeto (também servido por slug.FAROL_BASE_DOMAIN)
   api/                   BFF: market, token, fees, health, projects, runs, wallets
@@ -65,10 +85,11 @@ src/instrumentation.ts   liga o monitor contínuo no arranque
 src/lib/adapters/        uma integração por arquivo, com contrato Sourced<T> (fonte, horário, latência)
 src/lib/launcher/        Run/Step, runner sequencial e os 9 passos
 src/lib/wallets/vault.ts carteiras cifradas
+src/lib/users.ts         usuários (hash scrypt) · src/lib/auth.ts sessão assinada · src/lib/finance.ts consolidação
 src/lib/tracker/         snapshots, eventos, P&L
 src/lib/projects/        schema (zod) e store (JSON em disco, volume no Docker)
 src/lib/metrics/         matemática do negócio (funções puras)
-data/                    projects.json, hostnames.json, runs.json, vault/, track/
+data/                    projects.json, hostnames.json, runs.json, users.json, finance.json, vault/, track/
 ```
 
 ## Integrações
